@@ -1,10 +1,12 @@
 defmodule Base85.MixProject do
   use Mix.Project
 
+  @version "0.2.0"
+
   def project do
     [
       app: :base85,
-      version: "0.2.0",
+      version: @version,
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -42,7 +44,7 @@ defmodule Base85.MixProject do
       api_reference: false,
       extras: ["README.md": [title: "Overview"], "LICENSE.md": [title: "License"]],
       authors: ["Jayson Vantuyl"],
-      source_ref: "main"
+      source_ref: "v#{@version}"
     ]
   end
 end

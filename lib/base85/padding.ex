@@ -11,7 +11,7 @@ defmodule Base85.Padding do
   @doc false
   @spec get_pad_fun(keyword() | padding()) :: (binary(), keyword() -> binary())
   def get_pad_fun(opts) when is_list(opts) do
-    padding = Keyword.get(opts, :padding)
+    padding = Keyword.get(opts, :padding, :pkcs7)
     get_pad_fun(padding)
   end
 

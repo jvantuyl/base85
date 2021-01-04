@@ -15,9 +15,8 @@ defmodule Base85 do
   tune the generated output to avoid characters that are "dangerous" in
   certain transports.
 
-  ## Character Sets
-
-  Various implementations of Base85 encodings
+  This module holds references to the primary entrypoints for using this
+  library.
   """
   defdelegate encode(bin, opts \\ []), to: Base85.Encode
   defdelegate encode!(bin, opts \\ []), to: Base85.Encode

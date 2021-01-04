@@ -5,7 +5,49 @@ defmodule Base85.Decode do
 
   import Base85.{Charsets, Padding}
 
-  @spec decode!(binary(), keyword()) :: binary()
+  @typedoc "available character sets"
+  @type charset() :: Base85.Charsets.charset()
+  @typedoc "available padding techniques"
+  @type padding() :: Base85.Padding.padding()
+  @typedoc "options for decoding"
+  @type decoding_opts() :: [charset: charset(), padding: padding()]
+  @typedoc "decoding errors"
+  @type decoding_error() ::
+          :unrecognized_character_set
+          | :unrecognized_padding
+          | :invalid_encoded_length
+          | :invalid_character_for_character_set
+          | :invalid_padding_data
+          | :internal_error
+
+  @doc """
+  Decodes binary data from a Base85-encoded string.
+
+  This version returns the value or raises an error.
+
+  ## Examples
+
+      iex> Base85.Decode.decode!("N.Xx21Kf++HD3`AI>AZp$Aer7", charset: :safe85, padding: :pkcs7)
+      "some binary data"
+
+      iex> Base85.Decode.decode!("f!$Kwf!$Kwf!$Kw", charset: :zeromq, padding: :none)
+      "123412341234"
+
+      iex> Base85.Decode.decode!("123", charset: :safe85, padding: :none)
+      ** (Base85.InvalidEncodedLength) encoded data had invalid encoded length, expected multiple of 5 characters
+
+  ## Options
+
+    * `binary` - the binary data to decode, must be a multiple of 5-characters
+      long;
+
+    * `:charset` - an atom indicating the character set to use for decoding;
+
+    * `:padding` - an atom indicating which padding technique to use;
+
+    Padding methods and encodings may use additional options.
+  """
+  @spec decode!(binary(), decoding_opts()) :: binary()
   def decode!(bin, opts \\ []) when is_binary(bin) do
     dec_fun = get_dec_fun(opts)
     unpad_fun = get_unpad_fun(opts)
@@ -25,7 +67,34 @@ defmodule Base85.Decode do
     end
   end
 
-  @spec decode(binary(), keyword()) :: {:ok, binary()}
+  @doc """
+  Decodes binary data from a Base85-encoded string.
+
+  This version returns an `:ok`-tuple or `:error`-tuple.
+
+  ## Examples
+
+      iex> Base85.Decode.decode("N.Xx21Kf++HD3`AI>AZp$Aer7", charset: :safe85, padding: :pkcs7)
+      {:ok, "some binary data"}
+
+      iex> Base85.Decode.decode("f!$Kwf!$Kwf!$Kw", charset: :zeromq, padding: :none)
+      {:ok, "123412341234"}
+
+      iex> Base85.Decode.decode("123", charset: :safe85, padding: :none)
+      {:error, :invalid_encoded_length}
+
+  ## Options
+
+    * `binary` - the binary data to decode, must be a multiple of 5-characters
+      long;
+
+    * `:charset` - an atom indicating the character set to use for decoding;
+
+    * `:padding` - an atom indicating which padding technique to use;
+
+    Padding methods and encodings may use additional options.
+  """
+  @spec decode(binary(), decoding_opts()) :: {:ok, binary()} | {:error, decoding_error()}
   def decode(bin, opts) when is_binary(bin) do
     {:ok, decode!(bin, opts)}
   rescue

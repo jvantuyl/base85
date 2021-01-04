@@ -14,20 +14,23 @@ Supported padding methods include:
 Note that this currently does *not* implement padding used for full support of
 Safe85 or Safe85L.
 
+The PostgreSQL-safe character set eliminates characters used in SQL comments,
+statement termination, quoting, and placeholders.
+
 Unsupported character sets include:
+- Adobe ASCII85
 - btoa
 - ZModem Pack-7
-- Adobe ASCII85
 
 ## Installation
 
-This package is [available in Hex](https://hex.pm/). The package can be
-installed by adding `base85` to your list of dependencies in `mix.exs`:
+This package is [available in Hex](https://hex.pm/packages/base85). The package
+can be installed by adding `base85` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:base85, "~> 0.1.0"}
+    {:base85, "~> 0.2.0"}
   ]
 end
 ```

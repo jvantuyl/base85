@@ -3,7 +3,13 @@ defmodule Base85.Charsets do
   Implements various character sets used for Base85 encoding.
   """
   # These are charlists, since I actually want a list of chars.
-  @spec charsets() :: %{atom() => charlist()}
+  @typedoc "available character sets"
+  @type charset :: :safe85 | :zeromq | :postgresql
+
+  @doc """
+  Returns a map of character sets.
+  """
+  @spec charsets() :: %{charset() => charlist()}
   def charsets() do
     %{
       safe85:

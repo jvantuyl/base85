@@ -1,11 +1,15 @@
 defmodule Base85.Padding do
   @moduledoc """
   Implements various padding schemes for Base85 encodings.
+
+  This module has no externally useful functions.
   """
 
-  @type padding_type() :: :none | :pkcs7
+  @typedoc "padding methods"
+  @type padding() :: :none | :pkcs7
 
-  @spec get_pad_fun(keyword() | padding_type()) :: (binary(), keyword() -> binary())
+  @doc false
+  @spec get_pad_fun(keyword() | padding()) :: (binary(), keyword() -> binary())
   def get_pad_fun(opts) when is_list(opts) do
     padding = Keyword.get(opts, :padding)
     get_pad_fun(padding)
@@ -24,7 +28,10 @@ defmodule Base85.Padding do
     end
   end
 
-  @spec get_unpad_fun(keyword() | padding_type()) :: (binary(), keyword() -> binary())
+  @doc """
+  Used to get an unpadding function for a given padding type.
+  """
+  @spec get_unpad_fun(keyword() | padding()) :: (binary(), keyword() -> binary())
   def get_unpad_fun(opts) when is_list(opts) do
     type = Keyword.get(opts, :padding)
     get_unpad_fun(type)

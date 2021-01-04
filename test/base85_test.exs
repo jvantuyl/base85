@@ -1,6 +1,7 @@
 defmodule Base85Test do
   use ExUnit.Case, async: true
-  doctest Base85
+  doctest Base85.Encode
+  doctest Base85.Decode
 
   @known_strings %{
     {:postgresql, :none} => {<<98, 164, 78, 239, 145, 174, 115, 219>>, "HelloWorld"},

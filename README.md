@@ -45,5 +45,25 @@ A special thanks to everyone who has generously donated their time, effort, or
 funds to this project.
 
 <!-- readme: jvantuyl,collaborators,contributors,sponsors,bots/- -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/jvantuyl">
+                    <img src="https://avatars.githubusercontent.com/u/101?v=4" width="100;" alt="jvantuyl"/>
+                    <br />
+                    <sub><b>Jayson Vantuyl</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/elfenlaid">
+                    <img src="https://avatars.githubusercontent.com/u/765790?v=4" width="100;" alt="elfenlaid"/>
+                    <br />
+                    <sub><b>Egor Mihnevich</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: jvantuyl,collaborators,contributors,sponsors,bots/- -end -->
 

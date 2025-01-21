@@ -39,3 +39,11 @@ Documentation is generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). The docs can
 be found at [https://hexdocs.pm/base85](https://hexdocs.pm/base85).
 
+## Supporters
+
+A special thanks to everyone who has generously donated their time, effort, or
+funds to this project.
+
+<!-- readme: jvantuyl,collaborators,contributors,sponsors,bots/- -start -->
+<!-- readme: jvantuyl,collaborators,contributors,sponsors,bots/- -end -->
+

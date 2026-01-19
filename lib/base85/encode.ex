@@ -1,6 +1,6 @@
 defmodule Base85.Encode do
   @moduledoc """
-  Implements encoding functionality for Base85 encoding.
+  Implements encoding functionality for Base85 encoding in pure Elixir.
   """
 
   # Encoding basically can't fail, so non-!-versions are trivial.
@@ -41,9 +41,11 @@ defmodule Base85.Encode do
     * `binary` - the binary data to encode, must be a multiple of 32-bits long
       if no padding is used;
 
-    * `:charset` - an atom indicating the character set to use for encoding;
+    * `:charset` - an atom indicating the character set to use for encoding
+      (default: `:safe85`);
 
-    * `:padding` - an atom indicating which padding technique to use;
+    * `:padding` - an atom indicating which padding technique to use
+      (default: `:pkcs7`);
 
     Padding methods and encodings may use additional options.
   """
@@ -84,9 +86,11 @@ defmodule Base85.Encode do
     * `binary` - the binary data to encode, must be a multiple of 32-bits long
       if no padding is used;
 
-    * `:charset` - an atom indicating the character set to use for encoding;
+    * `:charset` - an atom indicating the character set to use for encoding
+      (default: `:safe85`);
 
-    * `:padding` - an atom indicating which padding technique to use;
+    * `:padding` - an atom indicating which padding technique to use
+      (default: `:pkcs7`);
 
     Padding methods and encodings may use additional options.
   """

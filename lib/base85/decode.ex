@@ -1,6 +1,6 @@
 defmodule Base85.Decode do
   @moduledoc """
-  Implements decoding functionality for Base85 encoding.
+  Implements decoding functionality for Base85 encoding in pure Elixir.
   """
 
   import Base85.{Charsets, Padding}
@@ -41,9 +41,11 @@ defmodule Base85.Decode do
     * `binary` - the binary data to decode, must be a multiple of 5-characters
       long;
 
-    * `:charset` - an atom indicating the character set to use for decoding;
+    * `:charset` - an atom indicating the character set to use for decoding
+      (default: `:safe85`);
 
-    * `:padding` - an atom indicating which padding technique to use;
+    * `:padding` - an atom indicating which padding technique to use
+      (default: `:pkcs7`);
 
     Padding methods and encodings may use additional options.
   """
@@ -51,6 +53,7 @@ defmodule Base85.Decode do
   def decode!(bin, opts \\ []) when is_binary(bin) do
     dec_fun = get_dec_fun(opts)
     unpad_fun = get_unpad_fun(opts)
+    padding = Keyword.get(opts, :padding, :pkcs7)
 
     if rem(byte_size(bin), 5) != 0 do
       raise Base85.InvalidEncodedLength, hint: "multiple of 5 characters"
@@ -88,9 +91,11 @@ defmodule Base85.Decode do
     * `binary` - the binary data to decode, must be a multiple of 5-characters
       long;
 
-    * `:charset` - an atom indicating the character set to use for decoding;
+    * `:charset` - an atom indicating the character set to use for decoding
+      (default: `:safe85`);
 
-    * `:padding` - an atom indicating which padding technique to use;
+    * `:padding` - an atom indicating which padding technique to use
+      (default: `:pkcs7`);
 
     Padding methods and encodings may use additional options.
   """

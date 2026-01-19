@@ -33,8 +33,8 @@ defmodule Base85.Padding do
   """
   @spec get_unpad_fun(keyword() | padding()) :: (binary(), keyword() -> binary())
   def get_unpad_fun(opts) when is_list(opts) do
-    type = Keyword.get(opts, :padding)
-    get_unpad_fun(type)
+    padding = Keyword.get(opts, :padding, :pkcs7)
+    get_unpad_fun(padding)
   end
 
   def get_unpad_fun(type) when is_atom(type) do

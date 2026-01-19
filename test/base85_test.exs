@@ -104,6 +104,44 @@ defmodule Base85Test do
     end)
   end
 
+  test "default options round-trip works (pkcs7)" do
+    original = "hello world"
+    encoded = Base85.encode!(original)
+    decoded = Base85.decode!(encoded)
+    assert decoded == original
+  end
+
+  test "default options round-trip works for various lengths" do
+    for len <- 1..20 do
+      original = :crypto.strong_rand_bytes(len)
+      encoded = Base85.encode!(original)
+      decoded = Base85.decode!(encoded)
+      assert decoded == original, "failed for length #{len}"
+    end
+  end
+
+  test "none padding encode validates input length" do
+    # Already covered by existing test, but let's be explicit
+    assert_raise(Base85.InvalidUnencodedLength, fn ->
+      # 3 bytes, not multiple of 4
+      Base85.encode!("abc", padding: :none)
+    end)
+
+    # Valid multiple of 4 should work
+    # 4 bytes, OK
+    assert {:ok, _} = Base85.encode("abcd", padding: :none)
+    # 8 bytes, OK
+    assert {:ok, _} = Base85.encode("abcdabcd", padding: :none)
+  end
+
+  test "none padding works correctly when input is valid" do
+    # 8 bytes input (multiple of 4)
+    original = "abcdabcd"
+    encoded = Base85.encode!(original, padding: :none)
+    decoded = Base85.decode!(encoded, padding: :none)
+    assert decoded == original
+  end
+
   @tag :skip
   test "internal error (exception)" do
     # currently there's no good way to trigger this

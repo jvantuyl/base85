@@ -30,7 +30,7 @@ can be installed by adding `base85` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:base85, "~> 0.2.0"}
+    {:base85, "~> 1.0.0"}
   ]
 end
 ```

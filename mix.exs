@@ -9,6 +9,7 @@ defmodule Base85.MixProject do
       version: @version,
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
       name: "Base85",
       description: "Implements some base-85 character encodings.",
@@ -28,6 +29,8 @@ defmodule Base85.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:memoize, "~> 1.4.4"},
+      {:pipet, "~> 0.1"},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false}
     ]
   end
@@ -45,4 +48,7 @@ defmodule Base85.MixProject do
       source_ref: "v#{@version}"
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 end

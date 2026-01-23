@@ -4,60 +4,68 @@ defmodule Base85.Padding do
 
   This module has no externally useful functions.
   """
+  import Base85.Chunking, only: [on_tail: 2]
 
   @typedoc "padding methods"
-  @type padding() :: :none | :pkcs7
+  @type padding() :: :none | :pkcs7 | :ascii85
+
+  @type transcoder :: (Enumerable.t(binary()) -> Enumerable.t(binary()))
 
   @doc false
-  @spec get_pad_fun(keyword() | padding()) :: (binary(), keyword() -> binary())
-  def get_pad_fun(opts) when is_list(opts) do
-    padding = Keyword.get(opts, :padding, :pkcs7)
-    get_pad_fun(padding)
-  end
+  @spec padding_encoders(keyword()) :: {transcoder(), transcoder()}
+  def padding_encoders(opts \\ []) do
+    type = Keyword.get(opts, :padding, :pkcs7)
 
-  def get_pad_fun(type) when is_atom(type) do
-    case type do
-      :none ->
-        &pad_none/2
+    {pre, post} =
+      case type do
+        :none ->
+          {&pad_none(&1, opts), & &1}
 
-      :pkcs7 ->
-        &pad_pkcs7/2
+        :pkcs7 ->
+          {&pad_pkcs7(&1, opts), & &1}
 
-      other ->
-        raise Base85.UnrecognizedPadding, padding: other, operation: :encoding
-    end
+        :ascii85 ->
+          {&pad_ascii85_pre(&1, opts), &pad_ascii85_post(&1, opts)}
+
+        other ->
+          raise Base85.UnrecognizedPaddingMethod, padding: other, operation: :encoding
+      end
+
+    {&on_tail(&1, pre), &on_tail(&1, post)}
   end
 
   @doc """
   Used to get an unpadding function for a given padding type.
   """
-  @spec get_unpad_fun(keyword() | padding()) :: (binary(), keyword() -> binary())
-  def get_unpad_fun(opts) when is_list(opts) do
-    padding = Keyword.get(opts, :padding, :pkcs7)
-    get_unpad_fun(padding)
-  end
+  @spec padding_decoders(keyword()) :: {transcoder(), transcoder()}
+  def padding_decoders(opts \\ []) when is_list(opts) do
+    {padding, opts} = Keyword.pop(opts, :padding, :pkcs7)
 
-  def get_unpad_fun(type) when is_atom(type) do
-    case type do
-      :none ->
-        &unpad_none/2
+    {pre, post} =
+      case padding do
+        :none ->
+          {&unpad_none(&1, opts), & &1}
 
-      :pkcs7 ->
-        &unpad_pkcs7/2
+        :pkcs7 ->
+          {& &1, &unpad_pkcs7(&1, opts)}
 
-      other ->
-        raise Base85.UnrecognizedPadding, padding: other, operation: :decoding
-    end
+        :ascii85 ->
+          {&unpad_ascii85_pre(&1, opts), &unpad_ascii85_post(&1, opts)}
+
+        other ->
+          raise Base85.UnrecognizedPaddingMethod, padding: other, operation: :decoding
+      end
+
+    {&on_tail(&1, pre), &on_tail(&1, post)}
   end
 
   # private functions
-
   defp pad_none(bin, _opts) do
     if rem(byte_size(bin), 4) != 0 do
       raise Base85.InvalidUnencodedLength, padding: :none, hint: "multiple of 4 bytes"
     end
 
-    bin
+    {bin, nil}
   end
 
   defp unpad_none(bin, _opts) do
@@ -69,7 +77,7 @@ defmodule Base85.Padding do
     |> byte_size()
     |> rem(4)
     |> case do
-      0 -> <<bin::binary, 4, 4, 4, 4>>
+      0 -> [bin, <<4, 4, 4, 4>>]
       1 -> <<bin::binary, 3, 3, 3>>
       2 -> <<bin::binary, 2, 2>>
       3 -> <<bin::binary, 1>>
@@ -82,7 +90,9 @@ defmodule Base85.Padding do
 
     cond do
       rem(size, 4) != 0 ->
-        raise Base85.InternalError, "decoding function returned incorrect length of data"
+        raise Base85.InvalidPaddingData,
+          padding: :pkcs7,
+          hint: "decoding function returned incorrect length of data"
 
       pad_bytes not in 1..4 ->
         raise Base85.InvalidPaddingData,
@@ -92,5 +102,73 @@ defmodule Base85.Padding do
       true ->
         binary_part(bin, 0, size - pad_bytes)
     end
+  end
+
+  defp pad_ascii85_pre(bin, _opts) do
+    remainder = rem(byte_size(bin), 4)
+
+    pad_count =
+      case remainder do
+        0 ->
+          0
+
+        n when n in 1..3 ->
+          4 - n
+
+        n ->
+          raise Base85.InvalidEncodedLength,
+            padding: :ascii85,
+            hint: "from 0 to 3 bytes, not #{n}"
+      end
+
+    if pad_count > 0 do
+      {<<bin::binary, 0::size(pad_count * 8)>>, pad_count}
+    else
+      bin
+    end
+  end
+
+  defp pad_ascii85_post({bin, pad_count}, _opts) when pad_count > 0 and pad_count < 5 do
+    binary_slice(bin, 0, byte_size(bin) - pad_count)
+  end
+
+  defp pad_ascii85_post(bin, _opts) do
+    bin
+  end
+
+  defp unpad_ascii85_pre(bin, opts) do
+    remainder = rem(byte_size(bin), 5)
+
+    pad_count =
+      case remainder do
+        0 ->
+          0
+
+        n when n in 2..4 ->
+          5 - n
+
+        n ->
+          raise Base85.InvalidEncodedLength,
+            hint: "from 2 to 4 bytes, not #{n}"
+      end
+
+    if pad_count > 0 do
+      pad_char =
+        Keyword.get(opts, :charset, :safe85) |> Base85.Charsets.charset() |> :lists.last()
+
+      pad_bin = String.duplicate(<<pad_char>>, pad_count)
+
+      {<<bin::binary, pad_bin::binary>>, pad_count}
+    else
+      bin
+    end
+  end
+
+  defp unpad_ascii85_post({bin, pad_count}, _opts) when pad_count > 0 and pad_count < 5 do
+    binary_slice(bin, 0, byte_size(bin) - pad_count)
+  end
+
+  defp unpad_ascii85_post(bin, _opts) do
+    bin
   end
 end

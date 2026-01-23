@@ -22,8 +22,75 @@ defmodule Base85 do
   This module holds references to the primary entrypoints for using this
   library.
   """
-  defdelegate encode(bin, opts \\ []), to: Base85.Encode
-  defdelegate encode!(bin, opts \\ []), to: Base85.Encode
-  defdelegate decode(bin, opts \\ []), to: Base85.Decode
-  defdelegate decode!(bin, opts \\ []), to: Base85.Decode
+
+  require Base85.Errors
+
+  @spec encode!(data :: binary, keyword()) :: binary()
+  def encode!(data, opts \\ []) when is_list(opts) do
+    [data]
+    |> Base85.Encoder.encode(opts)
+    |> Enum.to_list()
+    |> IO.iodata_to_binary()
+  end
+
+  @spec decode!(data :: binary, keyword()) :: binary()
+  def decode!(data, opts \\ []) when is_list(opts) do
+    [data]
+    |> Base85.Decoder.decode(opts)
+    |> Enum.to_list()
+    |> IO.iodata_to_binary()
+  end
+
+  @spec encode(data :: binary, keyword()) :: {:ok, binary()} | {:error, any()}
+  def encode(data, opts \\ []) when is_list(opts) do
+    encode!(data, opts)
+  rescue
+    error in Base85.Errors.types() -> Base85.Error.as_error_tuple(error)
+  end
+
+  @spec decode(data :: binary, keyword()) :: {:ok, binary()} | {:error, any()}
+  def decode(data, opts \\ []) when is_list(opts) do
+    decode!(data, opts)
+  rescue
+    error in Base85.Errors.types() -> Base85.Error.as_error_tuple(error)
+  end
+
+  @spec encode_stream!(stream :: Enumerable.t(binary()), keyword()) :: Enumerable.t(binary())
+  def encode_stream!(stream, opts \\ []) when is_list(opts) do
+    if stream |> Enumerable.impl_for() |> is_nil() do
+      raise ArgumentError, "Invalid stream (must be Enumerable)"
+    end
+
+    stream
+    |> Base85.Encoder.encode(opts)
+  end
+
+  @spec decode_stream!(stream :: Enumerable.t(binary()), keyword()) :: Enumerable.t(binary())
+  def decode_stream!(stream, opts \\ []) when is_list(opts) do
+    if stream |> Enumerable.impl_for() |> is_nil() do
+      raise ArgumentError, "Invalid stream (must be Enumerable)"
+    end
+
+    stream
+    |> Base85.Decoder.decode(opts)
+  end
+
+  @spec encode_stream(stream :: Enumerable.t(binary()), keyword()) ::
+          {:ok, Enumerable.t(binary())} | {:error, any()}
+  def encode_stream(stream, opts \\ []) when is_list(opts) do
+    encode_stream!(stream, opts)
+  rescue
+    error in Base85.Errors.types() -> Base85.Error.as_error_tuple(error)
+  end
+
+  @spec decode_stream(stream :: Enumerable.t(binary()), keyword()) ::
+          {:ok, Enumerable.t(binary())} | {:error, any()}
+  def decode_stream(stream, opts \\ []) when is_list(opts) do
+    decode_stream!(stream, opts)
+  rescue
+    error in Base85.Errors.types() -> Base85.Error.as_error_tuple(error)
+  end
+
+  defdelegate charsets(), to: Base85.Charsets
+  defdelegate charset(charset_id), to: Base85.Charsets
 end

@@ -2,6 +2,7 @@ defmodule Base85.MissingSuffix do
   @moduledoc """
   Raised at runtime when presented with data without a required suffix.
   """
+  # credo:disable-for-this-file Credo.Check.Consistency.ExceptionNames
   defexception [:suffix]
 
   @doc false

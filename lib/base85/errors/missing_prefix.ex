@@ -2,6 +2,7 @@ defmodule Base85.MissingPrefix do
   @moduledoc """
   Raised at runtime when presented with data without a required prefix.
   """
+  # credo:disable-for-this-file Credo.Check.Consistency.ExceptionNames
   defexception [:prefix]
 
   @doc false

@@ -1,4 +1,11 @@
 defmodule Base85.Framing do
+  @moduledoc """
+  Handles framing operations (prefixes, suffixes, whitespace) for different
+  encoding formats like ASCII85.
+  """
+
+  alias Base85.Framing.{Prefix, Suffix}
+
   defdelegate remove_prefix(stream, prefix, opts \\ []), to: Base85.Framing.Prefix
   defdelegate remove_suffix(stream, suffix, opts \\ []), to: Base85.Framing.Suffix
   defdelegate remove_whitespace(stream, opts \\ []), to: Base85.Framing.Whitespace
@@ -30,15 +37,15 @@ defmodule Base85.Framing do
   defp frame_ascii85_post(stream, opts) do
     stream
     |> strip_metadata()
-    |> Base85.Framing.Prefix.add_prefix("<~", opts)
-    |> Base85.Framing.Suffix.add_suffix("~>", opts)
+    |> Prefix.add_prefix("<~", opts)
+    |> Suffix.add_suffix("~>", opts)
   end
 
   defp unframe_ascii85_pre(stream, opts) do
     stream
     |> remove_whitespace(opts)
-    |> Base85.Framing.Prefix.remove_prefix("<~", opts)
-    |> Base85.Framing.Suffix.remove_suffix("~>", opts)
+    |> Prefix.remove_prefix("<~", opts)
+    |> Suffix.remove_suffix("~>", opts)
   end
 
   defp unframe_ascii85_post(stream, _opts) do

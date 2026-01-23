@@ -1,6 +1,13 @@
 defmodule Base85.Charsets do
   @moduledoc """
   Implements various character sets used for Base85 encoding.
+
+  Available character sets:
+
+    * `:safe85` - URL and filename safe character set (default)
+    * `:ascii85` - Adobe's original ASCII85 character set
+    * `:zeromq` - ZeroMQ's Z85 character set
+    * `:postgresql` - PostgreSQL-safe character set that avoids SQL syntax conflicts
   """
   use Memoize
 

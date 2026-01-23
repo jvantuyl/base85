@@ -1,4 +1,8 @@
 defmodule Base85.Chunking.Rechunk do
+  @moduledoc """
+  Stream transformer that re-chunks binary data into fixed-size segments.
+  """
+
   def rechunk(stream, chunk_size) when is_integer(chunk_size) and chunk_size > 0 do
     Stream.transform(
       stream,
@@ -9,7 +13,7 @@ defmodule Base85.Chunking.Rechunk do
     )
   end
 
-  defp rechunk_init(), do: nil
+  defp rechunk_init, do: nil
 
   defp rechunk_reduce(next, "", chunk_size) do
     rechunk_reduce(next, nil, chunk_size)

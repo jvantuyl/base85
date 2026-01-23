@@ -1,6 +1,9 @@
 defmodule Base85.Decoder do
   @moduledoc """
   Implements decoding functionality for Base85 encoding in pure Elixir.
+
+  Supports decoding profiles: `:default`, `:ascii85`, `:zeromq`, and `:postgresql`.
+  Each profile configures the appropriate charset, padding, framing, and quirks.
   """
   import Pipet
   import Base85.Charsets, only: [charset_decoder: 1]
@@ -22,7 +25,7 @@ defmodule Base85.Decoder do
       framing: :ascii85,
       quirks: [zero_hack: true]
     ],
-    z85: [
+    zeromq: [
       charset: :zeromq,
       padding: :none,
       framing: :none,

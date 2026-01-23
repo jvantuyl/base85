@@ -2,6 +2,7 @@ defmodule Base85.UnrecognizedCharacterSet do
   @moduledoc """
   Raised at runtime when an unknown character set is specified.
   """
+  # credo:disable-for-this-file Credo.Check.Consistency.ExceptionNames
   defexception [:charset, :operation]
 
   @doc false

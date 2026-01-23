@@ -1,6 +1,9 @@
 defmodule Base85.Encoder do
   @moduledoc """
   Implements encoding functionality for Base85 encoding in pure Elixir.
+
+  Supports encoding profiles: `:default`, `:ascii85`, `:zeromq`, and `:postgresql`.
+  Each profile configures the appropriate charset, padding, framing, and quirks.
   """
   import Pipet
   import Base85.Charsets, only: [charset_encoder: 1]

@@ -1,4 +1,8 @@
 defmodule Base85.Chunking.OnTail do
+  @moduledoc """
+  Stream transformer that applies a function only to the final element of a stream.
+  """
+
   @stream_start_marker __MODULE__.StartOfStream
   @stream_end_marker __MODULE__.EndOfStream
 
@@ -12,7 +16,7 @@ defmodule Base85.Chunking.OnTail do
     )
   end
 
-  def on_tail_init(), do: @stream_start_marker
+  def on_tail_init, do: @stream_start_marker
   def on_tail_reduce(next, @stream_start_marker), do: {[], next}
   def on_tail_reduce(next, previous), do: {[previous], next}
   def on_tail_last(@stream_start_marker, _func), do: {[], @stream_end_marker}

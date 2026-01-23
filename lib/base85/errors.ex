@@ -1,5 +1,9 @@
 defmodule Base85.Errors do
-  defmacro types() do
+  @moduledoc """
+  Defines the `Base85.Error` protocol and lists all error types for rescue clauses.
+  """
+
+  defmacro types do
     quote do
       [
         Base85.InternalError,

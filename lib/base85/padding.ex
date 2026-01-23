@@ -2,7 +2,11 @@ defmodule Base85.Padding do
   @moduledoc """
   Implements various padding schemes for Base85 encodings.
 
-  This module has no externally useful functions.
+  Supported padding methods:
+
+    * `:none` - no padding; input must be a multiple of 4 bytes
+    * `:pkcs7` - PKCS7-style padding that allows arbitrary-length input
+    * `:ascii85` - Adobe ASCII85 padding that encodes length in the output size
   """
   import Base85.Chunking, only: [on_tail: 2]
 

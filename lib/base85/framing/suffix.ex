@@ -1,4 +1,9 @@
 defmodule Base85.Framing.Suffix do
+  @moduledoc """
+  Stream utilities for adding and removing suffixes from encoded data
+  (e.g., `~>` for ASCII85).
+  """
+
   alias Base85.MissingSuffix
 
   def add_suffix(stream, suffix, _opts \\ []) do
@@ -20,7 +25,7 @@ defmodule Base85.Framing.Suffix do
     )
   end
 
-  defp rs_init() do
+  defp rs_init do
     {[], 0}
   end
 

@@ -1,4 +1,9 @@
 defmodule Base85.Framing.Prefix do
+  @moduledoc """
+  Stream utilities for adding and removing prefixes from encoded data
+  (e.g., `<~` for ASCII85).
+  """
+
   alias Base85.MissingPrefix
 
   def add_prefix(stream, prefix, _opts \\ []) do
@@ -20,7 +25,7 @@ defmodule Base85.Framing.Prefix do
     )
   end
 
-  defp rp_init() do
+  defp rp_init do
     {:detect, [], 0}
   end
 

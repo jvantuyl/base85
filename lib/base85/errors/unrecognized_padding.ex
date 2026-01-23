@@ -2,6 +2,7 @@ defmodule Base85.UnrecognizedPaddingMethod do
   @moduledoc """
   Raised at runtime when an unknown padding method is specified.
   """
+  # credo:disable-for-this-file Credo.Check.Consistency.ExceptionNames
   defexception [:padding, :operation]
 
   @doc false

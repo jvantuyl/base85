@@ -11,6 +11,7 @@ defmodule Base85.MixProject do
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
+      aliases: aliases(),
       name: "Base85",
       description: "Implements some base-85 character encodings.",
       source_url: "https://github.com/jvantuyl/base85",
@@ -31,7 +32,8 @@ defmodule Base85.MixProject do
     [
       {:memoize, "~> 1.4.4"},
       {:pipet, "~> 0.1"},
-      {:ex_doc, "~> 0.23", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -51,4 +53,14 @@ defmodule Base85.MixProject do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
+
+  defp aliases do
+    [
+      ci: ["test", "credo --strict"]
+    ]
+  end
+
+  def cli do
+    [preferred_envs: [ci: :test]]
+  end
 end

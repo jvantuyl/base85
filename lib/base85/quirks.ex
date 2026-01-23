@@ -1,4 +1,9 @@
 defmodule Base85.Quirks do
+  @moduledoc """
+  Implements encoding quirks like zero-compression (`z` for all-zeros) and
+  space-compression (`y` for all-spaces).
+  """
+
   use Memoize
   import Pipet, only: [pipet: 2]
 
@@ -13,21 +18,7 @@ defmodule Base85.Quirks do
     zero_hack = Keyword.get(quirk_opts, :zero_hack)
     space_hack = Keyword.get(quirk_opts, :space_hack)
 
-    zero_hack =
-      case zero_hack do
-        true -> "z"
-        false -> nil
-        nil -> nil
-        other when is_binary(other) and byte_size(other) == 1 -> other
-      end
-
-    space_hack =
-      case space_hack do
-        true -> "y"
-        false -> nil
-        nil -> nil
-        other when is_binary(other) and byte_size(other) == 1 -> other
-      end
+    {zero_hack, space_hack} = clean_hack_opts(zero_hack, space_hack)
 
     zero_code = calc_code(@zeroes, opts)
     space_code = calc_code(@spaces, opts)
@@ -57,27 +48,29 @@ defmodule Base85.Quirks do
     end
   end
 
+  defp clean_hack_opts(zero_hack, space_hack) do
+    zero_hack = clean_hack_opt(zero_hack, "z")
+    space_hack = clean_hack_opt(space_hack, "y")
+
+    {zero_hack, space_hack}
+  end
+
+  defp clean_hack_opt(hack, default) do
+    case hack do
+      true -> default
+      false -> nil
+      nil -> nil
+      other when is_binary(other) and byte_size(other) == 1 -> other
+    end
+  end
+
   @spec quirk_decoder([quirk()]) :: (Enumerable.t() -> Enumerable.t())
   def quirk_decoder(opts) do
     quirk_opts = Keyword.get(opts, :quirks, zero_hack: true, space_hack: true)
     zero_hack = Keyword.get(quirk_opts, :zero_hack)
     space_hack = Keyword.get(quirk_opts, :space_hack)
 
-    zero_hack =
-      case zero_hack do
-        true -> "z"
-        false -> nil
-        nil -> nil
-        other when is_binary(other) and byte_size(other) == 1 -> other
-      end
-
-    space_hack =
-      case space_hack do
-        true -> "y"
-        false -> nil
-        nil -> nil
-        other when is_binary(other) and byte_size(other) == 1 -> other
-      end
+    {zero_hack, space_hack} = clean_hack_opts(zero_hack, space_hack)
 
     zero_code = calc_code(@zeroes, opts)
     space_code = calc_code(@spaces, opts)

@@ -1,4 +1,8 @@
 defmodule Base85Test.ChunkTools do
+  @moduledoc """
+  Test utilities for generating alternative chunkings of a binary stream.
+  """
+
   def all_chunkings(<<>>) do
     []
   end

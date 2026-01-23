@@ -2,6 +2,7 @@ defmodule Base85.InternalError do
   @moduledoc """
   Raised at runtime when an internal error is encountered.
   """
+  # credo:disable-for-this-file Credo.Check.Consistency.ExceptionNames
   defexception [:message]
 
   defimpl Base85.Error do

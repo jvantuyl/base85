@@ -32,7 +32,7 @@ defmodule Base85.Encoder do
       quirks: []
     ],
     postgresql: [
-      charset: :safe85,
+      charset: :postgresql,
       padding: :pkcs7,
       framing: :none,
       quirks: [space_hack: true, zero_hack: true]

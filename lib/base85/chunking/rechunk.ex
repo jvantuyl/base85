@@ -27,7 +27,7 @@ defmodule Base85.Chunking.Rechunk do
     bytes_needed = chunk_size - byte_size(partial)
 
     case next do
-      <<enough::binary-size(bytes_needed), rest::binary>> ->
+      <<enough::binary-size(^bytes_needed), rest::binary>> ->
         complete = partial <> enough
         {subsequent_chunks, remainder} = rechunk_reduce(rest, nil, chunk_size)
 
@@ -47,7 +47,7 @@ defmodule Base85.Chunking.Rechunk do
         binary_part(oversize, full_chunks, len - full_chunks)
       end
 
-    {for(<<chunk::binary-size(chunk_size) <- oversize>>, do: chunk), tail_chunk}
+    {for(<<chunk::binary-size(^chunk_size) <- oversize>>, do: chunk), tail_chunk}
   end
 
   defp rechunk_reduce(exact, nil, chunk_size) when byte_size(exact) == chunk_size do

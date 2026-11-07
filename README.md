@@ -1,5 +1,7 @@
 # Base85
 
+[![CI](https://github.com/aggressive-labs/base85/actions/workflows/ci.yml/badge.svg)](https://github.com/aggressive-labs/base85/actions/workflows/ci.yml) [![Hex.pm](https://img.shields.io/hexpm/v/base85.svg)](https://hex.pm/packages/base85) [![HexDocs](https://img.shields.io/badge/docs-hexdocs-blue.svg)](https://hexdocs.pm/base85)
+
 Implements some base-85 character encodings.
 
 Supported character sets include:
